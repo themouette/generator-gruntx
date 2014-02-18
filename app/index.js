@@ -104,3 +104,8 @@ GruntExtendGenerator.prototype.projectfiles = function projectfiles() {
     this.copy('editorconfig', '.editorconfig');
     this.copy('jshintrc', '.jshintrc');
 };
+
+GruntExtendGenerator.prototype.binFiles = function binFiles() {
+    this.template('bin/bootstrap.sh', 'bin/bootstrap.sh');
+    this.template('bin/build.sh', 'bin/build.sh');
+};
