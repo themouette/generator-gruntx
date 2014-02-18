@@ -57,13 +57,14 @@
 //
 // ## Tasks
 //
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     // ================================================================ //
     //                                                                  //
     //                      DO NOT CHANGE THIS FILE                     //
     //                                                                  //
     // ================================================================ //
+    'use strict';
 
     // load some dependencies
     var path = require('path');
