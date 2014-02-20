@@ -7,14 +7,14 @@ My personal webapp generator, bundled with split grunt build.
 Choose any module loader:
 
 * requirejs
-* browserify
-* es6
+* browserify (WIP)
+* es6 (WIP)
 * none
 
 Choose your CSS framework:
 
 * Zurb Foundation 5
-* Twitter Bootstrap
+* Twitter Bootstrap (issue with libsass)
 * bourbon
 * none
 
