@@ -1,4 +1,4 @@
-# generator-gruntx [![Build Status](https://secure.travis-ci.org/themouette/generator-gruntx.png?branch=master)](https://travis-ci.org/themouette/generator-gruntx)
+# generator-grunt eXtend [![Build Status](https://secure.travis-ci.org/themouette/generator-gruntx.png?branch=master)](https://travis-ci.org/themouette/generator-gruntx)
 
 A generator for [Yeoman](http://yeoman.io).
 
