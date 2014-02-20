@@ -1,90 +1,11 @@
 'use strict';
 var util = require('util');
 var yeoman = require('yeoman-generator');
-
+var prompts = require('../prompts');
 
 var GruntGenerator = yeoman.generators.Base.extend({
-    init: function () {
-        console.log('You called the grunt subgenerator with the argument ' + this.name + '.');
-        if (!this.options) {
-            this.options = {};
-        }
-        var prompts = [];
 
-        // Add css preprocessor option if not provided
-        if (!this.options.cssPreprocessor) {
-            prompts.push({
-                type: 'list',
-                name: 'cssPreprocessor',
-                message: 'What css preprocessor would you like?',
-                choices: [{
-                        name: 'Sass',
-                        value: 'sass',
-                        checked: true
-                    }, {
-                        name: 'Vanilla css',
-                        value: 'vanilla'
-                    }]
-                });
-        }
-        if (!this.options.templateEngine) {
-            prompts.push({
-                    type: 'list',
-                    name: 'templateEngine',
-                    message: 'Which template engine would you like?',
-                    choices: [{
-                        name: 'Handlebars',
-                        value: 'handlebars',
-                        checked: true
-                    }, {
-                        name: 'No engine',
-                        value: 'none',
-                        checked: false
-                    }]
-                });
-        }
-        if (!this.options.features) {
-            prompts.push({
-                type: 'checkbox',
-                name: 'features',
-                message: 'What more would you like?',
-                choices: [{
-                        name: 'requirejs AMD',
-                        value: 'requirejs',
-                        checked: true
-                    }, {
-                        name: 'development server',
-                        value: 'server',
-                        checked: true
-                    }, {
-                        name: '',
-                        value: 'lodash',
-                        checked: true
-                    }]
-                });
-        }
-
-        if (prompts.length) {
-            // add a confirm box
-            prompts.push({
-                type: 'confirm',
-                name: 'go',
-                message: 'Ready to go ?',
-                default: true
-            });
-
-            var cb = this.async();
-            this.prompt(prompts, function (props) {
-                if (!props.go) cb(new Error('Aborted'));
-                [ 'cssPreprocessor', 'templateEngine', 'features' ]
-                .forEach(function (name) {
-                    this.options[name] = props[name];
-                }, this);
-                cb();
-            }.bind(this));
-        }
-
-    },
+    askForFrontFilesLocation: prompts.askFor('frontFilesLocation', prompts.frontFilesLocation),
 
     files: function () {
         // Copy `Gruntfile.js` and basic stuff for grunt-extend
@@ -94,7 +15,7 @@ var GruntGenerator = yeoman.generators.Base.extend({
         this.mkdir('grunt/plugins');
         this.copy('grunt/plugins/extendConfig.js', 'grunt/plugins/extendConfig.js');
         // Build configuration.
-        this.copy('grunt/config.json', 'grunt/config.json');
+        this.template('grunt/_config.json', 'grunt/config.json');
 
         // Add json configuration capabilities
         this.copy('grunt/tasks/options.js', 'grunt/tasks/options.js');
@@ -104,6 +25,7 @@ var GruntGenerator = yeoman.generators.Base.extend({
 
         // add doc task to generate doc.
         this.copy('grunt/tasks/doc.js', 'grunt/tasks/doc.js');
+        this.copy('grunt/tasks/bump.js', 'grunt/tasks/bump.js');
 
     },
 
@@ -120,15 +42,15 @@ var GruntGenerator = yeoman.generators.Base.extend({
     },
 
     moduleLoading: function () {
-        if (this.options.features.requirejs) {
-            moduleLoading(this, 'requirejs');
+        if (this.moduleLoader === 'requirejs') {
+            moduleLoading(this, 'requirejs', this.async());
         } else {
-            moduleLoading(this, 'none');
+            moduleLoading(this, 'none', this.async());
         }
     },
 
     templateEngine: function () {
-        templateEngine(this, this.options.templateEngine);
+        templateEngine(this, this.options.templateEngine, this.async());
     }
 });
 
@@ -137,35 +59,36 @@ function moduleLoading(generator, strategy, cb) {
     switch (strategy) {
         case 'requirejs':
             generator.copy('grunt/tasks/app-requirejs.js', 'grunt/tasks/app.js');
-            generator.bowerInstall(['requirejs', 'requirejs-text'], { save: true });
+            generator.bowerInstall(['requirejs', 'requirejs-text'], { save: true }, cb);
             break;
         case 'none':
             generator.log('No module loading.');
+            if (cb) cb();
             break;
         default:
             stop('Unknown module loading strategy "' + strategy + '"', cb);
     }
-    if (cb) cb();
 }
 
 function templateEngine(generator, strategy, cb) {
     strategy || (strategy = 'handlebars');
     switch (strategy) {
         case 'handlebars':
-            generator.bowerInstall(['handlebars'], { save: true });
-            generator.npmInstall(['grunt-contrib-handlebars'], {saveDev: true});
             generator.copy('grunt/tasks/templates-hbs.js', 'grunt/tasks/templates.js');
+            generator.bowerInstall(['handlebars'], { save: true }, function () {
+                generator.npmInstall(['grunt-contrib-handlebars'], {saveDev: true}, cb);
+            });
             break;
         case 'underscore':
-            generator.bowerInstall(['lodash'], { save: true });
+            generator.bowerInstall(['lodash'], { save: true }, cb);
             break;
         case 'none':
             generator.log('No template engine.');
+            if (cb) cb();
             break;
         default:
             stop('Unknown template engine strategy "' + strategy + '"', cb);
     }
-    if (cb) cb();
 }
 
 function stop(message, cb) {
