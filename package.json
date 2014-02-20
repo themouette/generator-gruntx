@@ -1,7 +1,7 @@
 {
-  "name": "generator-fossil",
+  "name": "generator-gruntx",
   "version": "0.0.0",
-  "description": "My personnal webapp generator",
+  "description": "A generator for [Yeoman](http://yeoman.io).\n\nMy personal webapp generator, bundled with split grunt build.\n\nChoose any module loader:\n\n* requirejs\n* browserify\n* es6\n* none\n\nChoose your CSS framework:\n\n* Zurb Foundation 5\n* Twitter Bootstrap\n* bourbon\n* none\n\nChoose your CSS preprocessor:\n\n* sass\n* none\n\nComing soon tests with mocha and Browserstack or Saucelabs.",
   "keywords": [
     "yeoman-generator"
   ],
@@ -15,7 +15,7 @@
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/themouette/generator-grunt-extend.git"
+    "url": "git://github.com/themouette/generator-gruntx.git"
   },
   "scripts": {
     "test": "mocha"

@@ -1,6 +1,29 @@
-# generator-grunt-extend [![Build Status](https://secure.travis-ci.org/themouette/generator-grunt-extend.png?branch=master)](https://travis-ci.org/themouette/generator-grunt-extend)
+# generator-gruntx [![Build Status](https://secure.travis-ci.org/themouette/generator-gruntx.png?branch=master)](https://travis-ci.org/themouette/generator-gruntx)
 
 A generator for [Yeoman](http://yeoman.io).
+
+My personal webapp generator, bundled with split grunt build.
+
+Choose any module loader:
+
+* requirejs
+* browserify
+* es6
+* none
+
+Choose your CSS framework:
+
+* Zurb Foundation 5
+* Twitter Bootstrap
+* bourbon
+* none
+
+Choose your CSS preprocessor:
+
+* sass
+* none
+
+Coming soon tests with mocha and Browserstack or Saucelabs.
 
 
 ## Getting Started
@@ -23,16 +46,17 @@ $ npm install -g yo
 
 Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
 
-To install generator-grunt-extend from npm, run:
+To install generator-gruntx from npm, run:
 
 ```
-$ npm install -g generator-grunt-extend
+$ npm install -g generator-gruntx
 ```
 
 Finally, initiate the generator:
 
 ```
-$ yo grunt-extend
+$ mkdir myProject & cd $_
+$ yo gruntx
 ```
 
 ### Getting To Know Yeoman
