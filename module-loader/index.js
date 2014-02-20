@@ -39,6 +39,15 @@ var ModuleLoaderGenerator = yeoman.generators.Base.extend({
         if (this.moduleLoader !== 'commonjs') {
             return false;
         }
+
+        // copy build file
+        this.template('grunt/tasks/_app-browserify.js', 'grunt/tasks/app.js');
+        // copy kernel file.
+        this.template('browserify/_kernel.js', this.frontFilesLocation + '/kernel.js');
+
+        this.npmPackages.push('grunt-contrib-clean');
+        this.npmPackages.push('grunt-browserify');
+        this.npmPackages.push('grunt-contrib-watch');
     },
 
     es6: function () {
@@ -47,6 +56,9 @@ var ModuleLoaderGenerator = yeoman.generators.Base.extend({
         }
     },
 
+    // In all cases, generated script is located under "/js/main.js".
+    //
+    // This step add a script tag to your `index.html`.
     insertScript: function () {
         // load index.html
         var indexFile = 'public/index.html';

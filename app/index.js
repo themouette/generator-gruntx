@@ -70,7 +70,7 @@ ApplicationGenerator.prototype.bublicFiles = function publicFiles() {
 ApplicationGenerator.prototype.grunt = function grunt() {
 
     var cb = this.async();
-    this.invoke('fossil:grunt', {
+    this.invoke('gruntx:grunt', {
         options:  {
             skipInstall: true,
             frontFilesLocation: this.frontFilesLocation
@@ -80,7 +80,7 @@ ApplicationGenerator.prototype.grunt = function grunt() {
 
 ApplicationGenerator.prototype.moduleLoader = function moduleLoader() {
     var cb = this.async();
-    this.invoke('fossil:module-loader', {
+    this.invoke('gruntx:module-loader', {
         options: {
             skipInstall: true,
             frontFilesLocation: this.frontFilesLocation,
@@ -93,7 +93,7 @@ ApplicationGenerator.prototype.moduleLoader = function moduleLoader() {
 // moduleLoader task.
 ApplicationGenerator.prototype.stylesheets = function stylesheets() {
     var cb = this.async();
-    this.invoke('fossil:stylesheet', {
+    this.invoke('gruntx:stylesheet', {
         options: {
             skipInstall: true,
             frontFilesLocation: this.frontFilesLocation,
@@ -106,7 +106,7 @@ ApplicationGenerator.prototype.stylesheets = function stylesheets() {
 
 ApplicationGenerator.prototype.server = function server() {
     var cb = this.async();
-    this.invoke('fossil:server', {
+    this.invoke('gruntx:server', {
         options: {
             skipInstall: true
         }
