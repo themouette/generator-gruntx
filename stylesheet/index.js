@@ -27,13 +27,17 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
         if ('foundation' !== this.framework) {
             return false;
         }
+        var foundationConfig;
         switch (this.moduleLoader) {
             case 'requirejs':
-                var foundationConfig = this.engine(this.read('foundation/require.config.js'));
+                foundationConfig = this.engine(this.read('foundation/require.config.js'));
                 replaceRjsConfigSection(this, 'Zurb Foundation configuration', foundationConfig);
-                this.copy('foundation/foundation.js', this.frontFilesLocation + '/foundation.js');
+                this.copy('foundation/require.foundation.js', this.frontFilesLocation + '/foundation.js');
                 break;
             case 'commonjs':
+                foundationConfig = this.engine(this.read('foundation/browserify.foundation.js'));
+                replaceCommonJsKernelSection(this, 'Zurb Foundation configuration', foundationConfig);
+                break;
             case 'es6':
             default:
                 console.log('I do not know how to integrate Foundation with "' + this.moduleLoader + '" module loader');
@@ -53,13 +57,17 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
         if ('bootstrap' !== this.framework) {
             return false;
         }
+        var bootstrapConfig;
         switch (this.moduleLoader) {
             case 'requirejs':
-                var bootstrapConfig = this.engine(this.read('bootstrap/require.config.js'));
+                bootstrapConfig = this.engine(this.read('bootstrap/require.config.js'));
                 replaceRjsConfigSection(this, 'Twitter Bootstrap configuration', bootstrapConfig);
-                this.copy('bootstrap/bootstrap.js', this.frontFilesLocation + '/bootstrap.js');
+                this.copy('bootstrap/requirejs.bootstrap.js', this.frontFilesLocation + '/bootstrap.js');
                 break;
             case 'commonjs':
+                bootstrapConfig = this.engine(this.read('bootstrap/browserify.bootstrap.js'));
+                replaceCommonJsKernelSection(this, 'Twitter Bootstrap configuration', bootstrapConfig);
+                break;
             case 'es6':
             default:
                 console.log('I do not know how to integrate Foundation with "' + this.moduleLoader + '" module loader');
@@ -179,15 +187,26 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
 module.exports = StylesheetGenerator;
 
 function replaceRjsConfigSection(generator, sectionTitle, newContent) {
+    var configPath = generator.frontFilesLocation + '/config.js';
+
+    return replaceFileSection(generator, configPath, sectionTitle, newContent);
+}
+
+function replaceCommonJsKernelSection(generator, sectionTitle, newContent) {
+    var configPath = generator.frontFilesLocation + '/kernel.js';
+
+    return replaceFileSection(generator, configPath, sectionTitle, newContent);
+}
+
+function replaceFileSection(generator, filePath, sectionTitle, newContent) {
     var start = '// {{{ ' + sectionTitle;
     var end = '// ' + sectionTitle + ' }}}';
     var re = new RegExp(start + '\n(.|\n)*\n' + end, 'mg');
 
     // load content
-    var configPath = generator.frontFilesLocation + '/config.js';
     var content;
     try {
-        content = generator.dest.read(configPath);
+        content = generator.dest.read(filePath);
     } catch (e) {
         content = '';
     }
@@ -206,5 +225,5 @@ function replaceRjsConfigSection(generator, sectionTitle, newContent) {
         '> You should accept file overwriting.',
         ''
     ].join('\n'));
-    generator.dest.write(configPath, content);
+    generator.dest.write(filePath, content);
 }
