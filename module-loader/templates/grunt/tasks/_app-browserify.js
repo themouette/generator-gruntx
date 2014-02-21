@@ -35,7 +35,12 @@ module.exports = function (grunt) {
             'mainjs': ['<%%= config.public.mainjs %>']
         },
         'browserify': {
-            '<%%= config.public.mainjs %>': '<%%= config.www.js %>/kernel.js'
+            'main.js': {
+                'options': grunt.file.readJSON(grunt.config.get('config.www.js') + '/config.js'),
+                'files': {
+                    '<%%= config.public.mainjs %>': '<%%= config.www.js %>/kernel.js'
+                }
+            }
         },
         'watch': {
             'app-dev': {

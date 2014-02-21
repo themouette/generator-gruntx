@@ -4,28 +4,24 @@
 // to learn more.
 
 // include foundation
-requireBower('modernizer/modernizer');
-requireBower('fastclick/lib/fastclick');
-function requireFoundation(part) {
-    'use strict';
-    return requireBower('foundation/js/foundation/foundation.' + part);
-}
-requireFoundation('foundation');
-//require('abide');
-//require('accordion');
-//require('alert');
-//require('clearing');
-//require('dropdown');
-//require('equalizer');
-//require('interchange');
-//require('joyride');
-//require('magellan');
-//require('offcanvas');
-//require('orbit');
-//require('reveal');
-//require('tab');
-//require('tooltip');
-//require('topbar');
+require('modernizr');
+require('fastclick');
+require('foundation/foundation');
+//require('foundation/abide');
+//require('foundation/accordion');
+//require('foundation/alert');
+//require('foundation/clearing');
+//require('foundation/dropdown');
+//require('foundation/equalizer');
+//require('foundation/interchange');
+//require('foundation/joyride');
+//require('foundation/magellan');
+//require('foundation/offcanvas');
+//require('foundation/orbit');
+//require('foundation/reveal');
+//require('foundation/tab');
+//require('foundation/tooltip');
+//require('foundation/topbar');
 
 $(function () {
     'use strict';

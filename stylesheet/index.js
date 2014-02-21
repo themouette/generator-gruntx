@@ -2,6 +2,8 @@
 var yeoman = require('yeoman-generator');
 var path = require('path');
 var prompts = require('../prompts');
+var browserify = require('../module-loader/browserify');
+var requirejs = require('../module-loader/requirejs');
 
 var StylesheetGenerator = yeoman.generators.Base.extend({
 
@@ -27,16 +29,15 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
         if ('foundation' !== this.framework) {
             return false;
         }
-        var foundationConfig;
+        var modulename = 'foundation';
         switch (this.moduleLoader) {
             case 'requirejs':
-                foundationConfig = this.engine(this.read('foundation/require.config.js'));
-                replaceRjsConfigSection(this, 'Zurb Foundation configuration', foundationConfig);
-                this.copy('foundation/require.foundation.js', this.frontFilesLocation + '/foundation.js');
+                requirejs.mergeConfigFile(this, modulename, 'foundation/requirejs.config.js');
+                requirejs.addKernelFile(this, modulename, 'foundation/requirejs.foundation.js');
                 break;
             case 'commonjs':
-                foundationConfig = this.engine(this.read('foundation/browserify.foundation.js'));
-                replaceCommonJsKernelSection(this, 'Zurb Foundation configuration', foundationConfig);
+                browserify.mergeConfigFile(this, modulename, 'foundation/browserify.config.js');
+                browserify.addKernelFile(this, modulename, 'foundation/browserify.foundation.js');
                 break;
             case 'es6':
             default:
@@ -57,16 +58,15 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
         if ('bootstrap' !== this.framework) {
             return false;
         }
-        var bootstrapConfig;
+        var modulename = 'bootstrap';
         switch (this.moduleLoader) {
             case 'requirejs':
-                bootstrapConfig = this.engine(this.read('bootstrap/require.config.js'));
-                replaceRjsConfigSection(this, 'Twitter Bootstrap configuration', bootstrapConfig);
-                this.copy('bootstrap/requirejs.bootstrap.js', this.frontFilesLocation + '/bootstrap.js');
+                requirejs.mergeConfigFile(this, modulename, 'bootstrap/requirejs.config.js');
+                requirejs.addKernelFile(this, modulename, 'bootstrap/requirejs.bootstrap.js');
                 break;
             case 'commonjs':
-                bootstrapConfig = this.engine(this.read('bootstrap/browserify.bootstrap.js'));
-                replaceCommonJsKernelSection(this, 'Twitter Bootstrap configuration', bootstrapConfig);
+                browserify.mergeConfigFile(this, modulename, 'bootstrap/browserify.config.js');
+                browserify.addKernelFile(this, modulename, 'bootstrap/browserify.bootstrap.js');
                 break;
             case 'es6':
             default:
@@ -186,44 +186,3 @@ var StylesheetGenerator = yeoman.generators.Base.extend({
 
 module.exports = StylesheetGenerator;
 
-function replaceRjsConfigSection(generator, sectionTitle, newContent) {
-    var configPath = generator.frontFilesLocation + '/config.js';
-
-    return replaceFileSection(generator, configPath, sectionTitle, newContent);
-}
-
-function replaceCommonJsKernelSection(generator, sectionTitle, newContent) {
-    var configPath = generator.frontFilesLocation + '/kernel.js';
-
-    return replaceFileSection(generator, configPath, sectionTitle, newContent);
-}
-
-function replaceFileSection(generator, filePath, sectionTitle, newContent) {
-    var start = '// {{{ ' + sectionTitle;
-    var end = '// ' + sectionTitle + ' }}}';
-    var re = new RegExp(start + '\n(.|\n)*\n' + end, 'mg');
-
-    // load content
-    var content;
-    try {
-        content = generator.dest.read(filePath);
-    } catch (e) {
-        content = '';
-    }
-
-    newContent = [start, newContent, end].join('\n');
-
-    if (re.test(content)) {
-        content = content.replace(re, newContent);
-    } else {
-        content = [content, newContent].join('\n');
-    }
-
-    console.info([
-        '',
-        '> I am adding ' + sectionTitle + ' to your requirejs config file.',
-        '> You should accept file overwriting.',
-        ''
-    ].join('\n'));
-    generator.dest.write(filePath, content);
-}

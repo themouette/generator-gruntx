@@ -1,13 +1,7 @@
+/* global require, console */
 'use strict';
 
-function requireBower(lib) {
-    return require('../../bower_components/' + lib);
-}
-function requireNpm(lib) {
-    return require('../../node_modules/' + lib);
-}
-
-var $ = requireBower('jquery/dist/jquery');
+var $ = require('jquery');
 
 console.log('I\'m ready to start.');
 console.log([

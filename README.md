@@ -7,7 +7,7 @@ My personal webapp generator, bundled with split grunt build.
 Choose any module loader:
 
 * requirejs
-* browserify (WIP)
+* browserify
 * es6 (WIP)
 * none
 

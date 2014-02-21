@@ -44,6 +44,7 @@ var ModuleLoaderGenerator = yeoman.generators.Base.extend({
         this.template('grunt/tasks/_app-browserify.js', 'grunt/tasks/app.js');
         // copy kernel file.
         this.template('browserify/_kernel.js', this.frontFilesLocation + '/kernel.js');
+        this.template('browserify/_config.js', this.frontFilesLocation + '/config.js');
 
         this.npmPackages.push('grunt-contrib-clean');
         this.npmPackages.push('grunt-browserify');
