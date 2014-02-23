@@ -6,7 +6,7 @@ var prompts = require('../prompts');
 var ModuleLoaderGenerator = yeoman.generators.Base.extend({
 
     init: function () {
-        console.log('Let\'s generate frontend application module loading configuration for you.');
+        this.log.info('I will generate frontend application module loading configuration for you.');
         this.npmPackages = [];
         this.bowerPackages = ['jquery'];
     },
@@ -68,12 +68,8 @@ var ModuleLoaderGenerator = yeoman.generators.Base.extend({
         try {
             content = this.dest.read(indexFile);
         } catch (e) {
-            console.info([
-                '',
-                '> No index.html found, please add stylesheet using the following:',
-                '> ' + script,
-                ''
-            ].join('\n'));
+            this.log.info('No index.html found, please add stylesheet using the following:');
+            this.log.info(script);
             return false;
         }
         // replace </head> with <link...></head>
@@ -81,12 +77,10 @@ var ModuleLoaderGenerator = yeoman.generators.Base.extend({
             return false;
         }
 
-        console.info([
-            '',
-            '> I am adding main JavaScript file to your index.html.',
-            '> You should accept file overwriting.',
-            ''
-        ].join('\n'));
+        this.log.write();
+        this.log.info('I am adding main JavaScript file to your index.html.');
+        this.log.info('You should accept file overwriting.');
+        this.log.write();
         var replaceRe = /(\s*)<\/body>/;
         content = content.replace(replaceRe, function (all, spaces) {
             return [

@@ -41,34 +41,10 @@ var GruntGenerator = yeoman.generators.Base.extend({
         ], {saveDev: true}, cb);
     },
 
-    moduleLoading: function () {
-        if (this.moduleLoader === 'requirejs') {
-            moduleLoading(this, 'requirejs', this.async());
-        } else {
-            moduleLoading(this, 'none', this.async());
-        }
-    },
-
     templateEngine: function () {
         templateEngine(this, this.options.templateEngine, this.async());
     }
 });
-
-function moduleLoading(generator, strategy, cb) {
-    strategy || (strategy = 'requirejs');
-    switch (strategy) {
-        case 'requirejs':
-            generator.copy('grunt/tasks/app-requirejs.js', 'grunt/tasks/app.js');
-            generator.bowerInstall(['requirejs', 'requirejs-text'], { save: true }, cb);
-            break;
-        case 'none':
-            generator.log('No module loading.');
-            if (cb) cb();
-            break;
-        default:
-            stop('Unknown module loading strategy "' + strategy + '"', cb);
-    }
-}
 
 function templateEngine(generator, strategy, cb) {
     strategy || (strategy = 'handlebars');
@@ -83,7 +59,7 @@ function templateEngine(generator, strategy, cb) {
             generator.bowerInstall(['lodash'], { save: true }, cb);
             break;
         case 'none':
-            generator.log('No template engine.');
+            generator.log.skip('No template engine.');
             if (cb) cb();
             break;
         default:

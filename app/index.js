@@ -19,8 +19,9 @@ util.inherits(ApplicationGenerator, yeoman.generators.Base);
 
 ApplicationGenerator.prototype.init = function init() {
     // have Yeoman greet the user.
-    console.log(this.yeoman);
-    console.log('This generator comes with grunt-extend-config out of the box.');
+    this.log.writeln(this.yeoman);
+    this.log.write();
+    this.log.info('This generator comes with grunt-extend-config out of the box.');
 };
 
 ApplicationGenerator.prototype.askForFrontFilesLocation = prompts.askFor('frontFilesLocation', prompts.frontFilesLocation);
@@ -37,6 +38,17 @@ ApplicationGenerator.prototype.askFor = function askFor() {
             message: 'Ready to go ?',
             default: true
         }];
+    var config;
+    try {
+        config = this.engine(this.dest.read('.gruntx'));
+        this.log.write();
+        this.log.info("I will proceed with following options:");
+        this.log.writeln(config.replace(/^/gm, (new Array(6)).join(' ')));
+        this.log.write();
+    } catch (e) {
+        console.log(e);
+        this.log.skip('unable to read .gruntx file');
+    }
 
     this.prompt(prompts, function (props) {
         if (!props.go) {
@@ -63,7 +75,7 @@ ApplicationGenerator.prototype.binFiles = function binFiles() {
     this.copy('bin/build.sh', 'bin/build.sh');
 };
 
-ApplicationGenerator.prototype.bublicFiles = function publicFiles() {
+ApplicationGenerator.prototype.publicFiles = function publicFiles() {
     this.template('public/_index.html', 'public/index.html');
 };
 

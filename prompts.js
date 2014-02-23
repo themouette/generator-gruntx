@@ -1,26 +1,66 @@
 'use strict';
 // Define all the prompts for embedded generators.
+var _ = require('lodash');
 
-function askFor(property, question) {
+function loadGruntxOptions(generator) {
+    var config;
+    try {
+        config = generator.engine(generator.dest.read('.gruntx'));
+    } catch (e) {
+        console.log(e);
+        generator.log.skip('unable to read .gruntx file');
+        config = '{}';
+    }
+    config = JSON.parse(config);
+    generator.gruntx = config || {};
+    _.extend(generator, config);
+}
+
+function saveGruntxOption(generator, name, value) {
+    var gruntx = generator.gruntx;
+    gruntx[name] = value;
+    require('fs').writeFileSync('.gruntx', JSON.stringify(gruntx, null, 4));
+}
+
+// @param property the property name in generator templates
+// @param question the commander question to ask for
+//
+// @return function to call at generator runtime
+function askForFactory(property, question) {
     var extra = Array.prototype.slice.call(arguments, 2);
     return function () {
+        if (!this.gruntx) {
+            loadGruntxOptions(this);
+        }
+        // load property from passed `options`.
+        // This is used mostly for sub generators invocation.
         if (property in this.options && typeof this.options[property] !== 'undefined') {
             this[property] = this.options[property];
             return false;
         }
 
+        // if provided question is a function, then it
+        // is evaluated in generator context with extra arguments.
         question = typeof question === 'function' ? question.apply(this, extra) : question;
+        var name = question.name;
+        // initialize from gruntx option
+        if (name in this.gruntx && typeof this.gruntx[name] !== 'undefined') {
+            this[property] = this.gruntx[name];
+            return false;
+        }
 
+        // prompt and save as a property.
         var cb = this.async();
         this.prompt([question], function (props) {
-            this[property] = props[question.name];
+            this[property] = props[name];
+            saveGruntxOption(this, name, props[name]);
             cb();
         }.bind(this));
     };
 }
 
 module.exports = {
-    askFor: askFor,
+    askFor: askForFactory,
     cssPreprocessor: {
         type: 'list',
         name: 'cssPreprocessor',
@@ -35,13 +75,14 @@ module.exports = {
         }]
     },
     cssFramework: function (preprocessor) {
-        preprocessor || (preprocessor = 'cssPreprocessor');
+        if (!preprocessor) {
+            preprocessor = 'cssPreprocessor';
+        }
         return {
             type: 'list',
-            name: 'framework',
+            name: 'cssFramework',
             message: 'What framework would you like?',
             choices: function () {
-                console.log(this.preprocessor);
                 switch (this[preprocessor]) {
                     case 'sass':
                         return [{
