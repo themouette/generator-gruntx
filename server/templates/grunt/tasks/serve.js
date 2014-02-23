@@ -37,12 +37,12 @@ module.exports = function (grunt) {
         connect: {
             options: {
                 port: port,
-                hostname: '*'
+                hostname: '0.0.0.0',
+                base: 'public'
             },
             dev: {
                 options: {
-                    debug: true,
-                    middleware: function (connect) {
+                    middleware: function (connect, options, middlewares) {
                         return [
                             connect.logger('dev'),
                             // serve bower components if exists
@@ -53,21 +53,20 @@ module.exports = function (grunt) {
                             serverApp(connect, 'config.server.dev'),
                             // Finally, js www sources
                             jsSourcesDir(connect)
-                        ];
+                        ].concat(middlewares);
                     }
                 }
             },
             prod: {
                 options: {
                     debug: false,
-                    middleware: function (connect) {
+                    middleware: function (connect, options, middlewares) {
                         return [
-                            connect.logger(),
                             // Serve compiled assets if exists
                             publicDir(connect),
                             // Then application
                             serverApp(connect, 'config.server.prod'),
-                        ];
+                        ].concat(middlewares);
                     }
                 }
             }
