@@ -8,7 +8,6 @@ Choose any module loader:
 
 * requirejs
 * browserify
-* es6 (WIP)
 * none
 
 Choose your CSS framework:
@@ -23,7 +22,19 @@ Choose your CSS preprocessor:
 * sass
 * none
 
-Coming soon tests with mocha and Browserstack or Saucelabs.
+Generate static content using
+
+* [wintersmith](http://wintersmith.io) and Handlebars or jade.
+
+Coming soon:
+
+* tests with mocha, casperjs and Browserstack or Saucelabs.
+* template engine (handlebars)
+* bump and deploy scripts
+
+Coming later:
+
+* Add a tranpiler
 
 
 ## Getting Started
