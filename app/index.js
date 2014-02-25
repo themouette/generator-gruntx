@@ -116,6 +116,15 @@ ApplicationGenerator.prototype.stylesheets = function stylesheets() {
     }, cb);
 };
 
+ApplicationGenerator.prototype.staticContent = function staticContent() {
+    var cb = this.async();
+    this.invoke('gruntx:static', {
+        options: {
+            skipInstall: true
+        }
+    }, cb);
+};
+
 ApplicationGenerator.prototype.server = function server() {
     var cb = this.async();
     this.invoke('gruntx:server', {

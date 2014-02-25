@@ -94,6 +94,12 @@
             // -------------------------------------------------
             "css": "assets/css"
         },
+        "static": {
+            // -------------------------------------------------
+            // Directory where static sources are located.
+            // -------------------------------------------------
+            "dir": "content"
+        },
         "server": {
             // Directory where server javascript is located.
             // -------------------------------------------------
